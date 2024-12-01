@@ -22,13 +22,13 @@ public class Proizvodjac extends Thread {
     
     // u run metodi proizvodjac proizvodi
     public void run(){
-        System.out.println("Proizvodjac "+id+" je krenuo sa proizvodnjom");
+        //System.out.println("Proizvodjac "+id+" je krenuo sa proizvodnjom");
         try{
             // metoda interrupted vrati da li je nit prekinuta
             while(!interrupted()){
                 // sada se simulira broj koliko traje proizvodnja
                 // Math.random vraca broj izmedju 0 i 1
-                // dobija se broj koji je u intervalu maxTime-minTimd
+                // dobija se broj koji je u intervalu maxTime-minTime
            
                 int trajanje = minTime + (int)Math.random()*(maxTime-minTime);
                 sleep(trajanje); // moramo da uspavamo nit za to vreme
@@ -38,10 +38,10 @@ public class Proizvodjac extends Thread {
                 // za proizvodjaca 2: 2000, 2001, 2002
                 skladiste.Stavi(proizvod);
             
-                System.out.println("Proizveden je proizvod" + proizvod + " i dodat u skladiste");
+             //   System.out.println("Proizveden je proizvod" + proizvod + " i dodat u skladiste");
             }
         } catch (InterruptedException ex) {
-            System.out.println("Prozivodjac "+id+ " je zavrsio sa radom");
+          //  System.out.println("Prozivodjac "+id+ " je zavrsio sa radom");
         }           
     }
 }

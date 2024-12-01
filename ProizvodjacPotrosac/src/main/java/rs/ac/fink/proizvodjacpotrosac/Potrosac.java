@@ -21,18 +21,18 @@ public class Potrosac extends Thread {
     }
 
     public void run() {
-        System.out.println("Potrosac "+id+" je krenuo da uzima proizvode.");
+       // System.out.println("Potrosac "+id+" je krenuo da uzima proizvode.");
         
         try {
             while (!interrupted()) {
                 int proizvod = skladiste.Uzmi(); // Uzimanje proizvoda
-                System.out.println("Potrosac " + id + " je preuzeo proizvod " + proizvod + ".");
+                //System.out.println("Potrosac " + id + " je preuzeo proizvod " + proizvod + ".");
                 int trajanje = minTime + (int) (Math.random() * (maxTime - minTime));
                 sleep(trajanje); // Simulacija trošenja proizvoda
             }
             
         } catch (InterruptedException ex) {
-            System.out.println("Potrosac "+id+" je zavrsio sa uzimanjem proizvode");
+           // System.out.println("Potrosac "+id+" je zavrsio sa uzimanjem proizvode");
         }
     }
 }

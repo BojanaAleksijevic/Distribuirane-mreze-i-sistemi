@@ -24,7 +24,6 @@ public class Rampa {
     
     private String nazivRampe;
     private  List<Stanica> stanice;
-    //private int brStanica;
     private double tsr; // srednje vreme
     private boolean otvorena;
     
@@ -33,12 +32,13 @@ public class Rampa {
     private Random random = new Random();
 
     // konstruktor
-    public Rampa(String nazivRampe, int brStanica, double tsr) {
+    public Rampa(String nazivRampe, double tsr) {
         this.nazivRampe = nazivRampe;
         this.stanice = new ArrayList<>();
         this.tsr = tsr;
         this.otvorena = false;
         this.naplaceniIznos = 0;
+        this.random = new Random();
     }
 
     // Metoda inicijalizujStanice koristi clone() metodu klase Stanica da stvori kopije osnovne stanice
@@ -98,10 +98,6 @@ public class Rampa {
     }
     
     
-
-    public int getNaplaceniIznos() {
-        return naplaceniIznos;
-    }
     
     public void simulirajDolazakVozila() {
         if (!otvorena) {
@@ -133,6 +129,29 @@ public class Rampa {
         }
     }
     
+    
+    public void simulirajRadRampe(int trajanjeSekundi) {
+        if (!otvorena) {
+            throw new IllegalStateException("Rampa mora biti otvorena pre simulacije.");
+        }
+        if (trajanjeSekundi <= 0) {
+            throw new IllegalArgumentException("Trajanje simulacije mora biti pozitivno.");
+        }
+
+        long pocetnoVreme = System.currentTimeMillis();
+        long trajanjeMillis = trajanjeSekundi * 1000;
+
+        while (System.currentTimeMillis() - pocetnoVreme < trajanjeMillis) {
+            simulirajDolazakVozila(); // Simulacija jednog dolaska vozila
+        }
+    }
+    
+    
+
+    public int getNaplaceniIznos() {
+        return naplaceniIznos;
+    }
+
     
     // naziv(naplaćeno):stanica,…,stanica. 
     @Override

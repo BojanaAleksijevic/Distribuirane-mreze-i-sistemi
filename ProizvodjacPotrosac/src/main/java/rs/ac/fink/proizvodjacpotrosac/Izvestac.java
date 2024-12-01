@@ -1,55 +1,55 @@
-// u regularnim vremenskim intervalima prikazuje sadržaj zadatog skladišta
-
 package rs.ac.fink.proizvodjacpotrosac;
 
-public class Izvestac extends Thread {
-    private static int statId = 0; 
-    private int id=++statId; 
-    
-    private Skladiste skladiste;
-    private int interval; 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
-    public Izvestac(Skladiste skladiste, int interval) {
+public class Izvestac extends Thread {
+    private static int statId = 0;
+    private final int id = ++statId; // Svakom izveštaču se dodeljuje jedinstveni ID
+    private final Skladiste skladiste;
+    private final String fileRaspored;
+
+    public Izvestac(Skladiste skladiste, String fileRaspored) {
         this.skladiste = skladiste;
-        this.interval = interval;
+        this.fileRaspored = fileRaspored;
     }
-    
+
     @Override
     public void run() {
-        System.out.println("Izvestaj br.  "+id+" je zapocet.");
-        
-        try {
-            while (!interrupted()) {
-                synchronized (skladiste) {
-                    int[] stanje = skladiste.getNiz();
-                    System.out.print("Izvestac " + id + " - Sadrzaj skladista: ");
-                    for (int i = 0; i < stanje.length; i++) {
-                        if (stanje[i] != 0) {
-                            System.out.print(stanje[i] + " ");
-                        }
-                    }
-                    System.out.println();
-                }
-                sleep(10000); // Provera stanja na svakih 10 sekundi
-            }
-            
-        } catch (InterruptedException ex) {
-            System.out.println("Izvestac "+id+" je zavrsio sa izvestajem.");
-        }
-    }
-    
-    private synchronized void prikazSadrzaja() {
-        System.out.println("Izvestaj za skladiste ID: " + skladiste.getSkladisteID());
-        System.out.println("Trenutno stanje skladista: " + skladiste.getStanje() + "/" + skladiste.getKapacitet());
+        System.out.println("Izvestac " + id + " je zapoceo rad.");
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileRaspored))) {
+            String red;
+            while ((red = reader.readLine()) != null) {
+                String[] delovi = red.split("\\s+");
 
-        int[] trenutniNiz = skladiste.getNiz();  // Dobijanje kopije niza
-        System.out.print("Sadrzaj: [");
-        for (int i = 0; i < trenutniNiz.length; i++) {
-            System.out.print(trenutniNiz[i]);
-            if (i < trenutniNiz.length - 1) {
-                System.out.print(", ");
+                // Proveravamo da li je trenutni red za ovog izveštača
+                if (delovi.length == 2 && delovi[1].equals("Izvestac" + id)) {
+                    synchronized (skladiste) {
+                        // Sinhronizacija pristupa skladištu
+                        System.out.println("Izvestac " + id + " - Izvestaj za skladiste:");
+                        System.out.println("Trenutno stanje skladista: " + skladiste.getStanje() + "/" + skladiste.getKapacitet());
+
+                        int[] trenutniNiz = skladiste.getNiz(); // Dobijanje kopije niza
+                        System.out.print("Sadrzaj: [");
+                        for (int i = 0; i < trenutniNiz.length; i++) {
+                            System.out.print(trenutniNiz[i]);
+                            if (i < trenutniNiz.length - 1) {
+                                System.out.print(", ");
+                            }
+                        }
+                        System.out.println("]");
+                    }
+                }
+
+                // Pauza između provera kako bi se izveštaji smestili u odgovarajuće intervale
+                Thread.sleep(1000); // Pauza između provera
             }
+        } catch (IOException e) {
+            System.err.println("Greška prilikom čitanja fajla '" + fileRaspored + "': " + e.getMessage());
+        } catch (InterruptedException e) {
+            System.out.println("Izvestac " + id + " je prekinut.");
         }
-        System.out.println("]");
-    }   
+        System.out.println("Izvestac " + id + " je završio rad.");
+    }
 }

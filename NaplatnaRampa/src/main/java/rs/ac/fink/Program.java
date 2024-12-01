@@ -14,63 +14,83 @@ public class Program {
         // Definišemo osnovnu stanicu sa početnim cenovnikom
         int[] putarine = {100, 200, 300, 400}; // Primer putarina za 4 kategorije
         Cenovnik osnovniCenovnik = new Cenovnik(putarine);
+        
+        
+        // prva rampa
         Stanica osnovnaStanica = new Stanica();
         osnovnaStanica.postaviCenovnik(osnovniCenovnik);
 
-        // Kreiramo naplatnu rampu
-        Rampa rampa = new Rampa("Rampa A1", 5, 2.0); // naziv, broj stanica, tsr (sekunde)
+        Rampa rampa = new Rampa("Rampa A1", 2.0);
         rampa.inicijalizujStanice(osnovnaStanica, 5);
+        
+        
+        // druga rampa
+        Stanica osnovnaStanica2 = new Stanica();
+        osnovnaStanica2.postaviCenovnik(osnovniCenovnik);
+        
+        Rampa rampa2 = new Rampa("Rampa A2", 8.0);
+        rampa2.inicijalizujStanice(osnovnaStanica, 5);
 
         // Otvaramo rampu sa novim cenovnikom (sa putarinama za 4 kategorije vozila)
         Cenovnik noviCenovnik = new Cenovnik(new int[]{150, 250, 350, 450});
         rampa.open(noviCenovnik);
-        System.out.println("Rampa otvorena:");
+        rampa2.open(noviCenovnik);
+        
+        System.out.println("Rampa A1 otvorena:");
         System.out.println(rampa);
+        
+        System.out.println("Rampa  A2 otvorena:");
+        System.out.println(rampa2);
 
-        // Simulacija dolaska vozila tokom 5 dolazaka
-        Thread simulacija = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
-                rampa.simulirajDolazakVozila(); // Simuliramo dolazak vozila
-                System.out.println("Stanje rampe nakon dolaska vozila:");
-                System.out.println(rampa);
+        /*
+        System.out.println("Simulacija rada rampe...");
+        rampa.simulirajRadRampe(10); // Simulacija 10 sekundi
+*/
+        
+        new Thread(() -> rampa.simulirajRadRampe(10)).start();
+        new Thread(() -> rampa2.simulirajRadRampe(10)).start();
 
-                try {
-                    Thread.sleep(1000); // Pauza između ispisivanja stanja (2 sekunde)
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        });
-        simulacija.start();
-        simulacija.join(); // osigurava da se glavni tok programa zaustavi dok se simulacija ne završi
-
+        // Pauza za simulaciju
         try {
-            Thread.sleep(2000);
-          //  simulacija.join(); // Sačekaj završetak simulacije
+            Thread.sleep(12000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+        
+        
 
+        // Ispis trenutnog stanja rampe
+        System.out.println("Stanje rampe A1 nakon simulacije:");
+        System.out.println(rampa);
+        
+        System.out.println("Stanje rampe A2 nakon simulacije:");
+        System.out.println(rampa2);
         
         try {
             Thread.sleep(2000); 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        
-        
-        // Ispis trenutnog stanja rampe
-        System.out.println("Stanje rampe nakon simulacije:");
-        System.out.println(rampa);
 
         // Zatvaranje rampe
         rampa.close();
-        System.out.println("Rampa zatvorena:");
+        System.out.println("Rampa A1 zatvorena:");
         System.out.println(rampa);
+        
+        
+        rampa2.close();
+        System.out.println("Rampa A2 zatvorena:");
+        System.out.println(rampa2);
+        
+       
 
         // Uništavanje rampe
         rampa.destroy();
         System.out.println("Rampa unistena:");
         System.out.println(rampa);
+       
+        rampa2.destroy();
+        System.out.println("Rampa A2 unistena:");
+        System.out.println(rampa2); 
     }
 }

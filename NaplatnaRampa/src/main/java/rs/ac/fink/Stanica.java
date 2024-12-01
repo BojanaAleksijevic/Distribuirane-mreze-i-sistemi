@@ -48,6 +48,7 @@ public class Stanica implements Cloneable{
     public Stanica clone() {
         try {
             Stanica s = (Stanica)super.clone();
+            // poziv super.clone() pravi plitku kopiju objekta Stanica
             s.id = ++stanicaID;
             s.naplaceniIznos = 0; // sa anuliranom naplaćenom putarinom
             return s;
